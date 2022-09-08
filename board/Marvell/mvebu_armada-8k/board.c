@@ -95,7 +95,7 @@ int board_xhci_config(void)
 	return 0;
 }
 
-int board_xhci_enable(fdt_addr_t base)
+int board_xhci_enable(void)
 {
 	struct udevice *dev;
 	int ret;

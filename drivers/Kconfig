@@ -18,8 +18,6 @@ source "drivers/cpu/Kconfig"
 
 source "drivers/crypto/Kconfig"
 
-source "drivers/rng/Kconfig"
-
 source "drivers/ddr/Kconfig"
 
 source "drivers/demo/Kconfig"

@@ -18,11 +18,7 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
-__weak int board_run_command(const char *cmdline)
-{
-	return cli_simple_run_command_list((char *)cmdline, 0);
-}
-
+#ifdef CONFIG_CMDLINE
 /*
  * Run a command using the selected parser.
  *
@@ -73,6 +69,7 @@ int run_command_repeatable(const char *cmd, int flag)
 	return 0;
 #endif
 }
+#endif /* CONFIG_CMDLINE */
 
 int run_command_list(const char *cmd, int len, int flag)
 {
@@ -215,7 +212,6 @@ err:
 }
 #endif /* CONFIG_IS_ENABLED(OF_CONTROL) */
 
-#ifndef CONFIG_CONSOLE_DISABLE_CLI
 void cli_loop(void)
 {
 #ifdef CONFIG_HUSH_PARSER
@@ -228,9 +224,6 @@ void cli_loop(void)
 	printf("## U-Boot command line is disabled. Please enable CONFIG_CMDLINE\n");
 #endif /*CONFIG_HUSH_PARSER*/
 }
-#else
-void cli_loop(void) { }
-#endif
 
 void cli_init(void)
 {

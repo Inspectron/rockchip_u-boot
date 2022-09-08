@@ -14,7 +14,7 @@
  * changes to support FDT are minimized.
  */
 
-#include <linux/libfdt.h>
+#include <libfdt.h>
 #include <pci.h>
 
 /*
@@ -45,10 +45,6 @@ struct fdt_memory {
 #define SPL_BUILD	1
 #else
 #define SPL_BUILD	0
-#endif
-
-#if CONFIG_IS_ENABLED(OF_PRIOR_STAGE)
-extern phys_addr_t prior_stage_fdt_address;
 #endif
 
 /*

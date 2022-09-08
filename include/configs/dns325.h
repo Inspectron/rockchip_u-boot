@@ -28,6 +28,7 @@
 /*
  * Commands configuration
  */
+#define CONFIG_SYS_MVFS
 
 #define CONFIG_NR_DRAM_BANKS		1
 

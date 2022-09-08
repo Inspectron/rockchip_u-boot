@@ -35,6 +35,7 @@ enum state_terminal_raw {
 };
 
 struct sandbox_spi_info {
+	const char *spec;
 	struct udevice *emul;
 };
 

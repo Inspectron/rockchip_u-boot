@@ -8,7 +8,7 @@
 #ifndef __FSMC_NAND_H__
 #define __FSMC_NAND_H__
 
-#include <linux/mtd/rawnand.h>
+#include <linux/mtd/nand.h>
 
 struct fsmc_regs {
 	u32 ctrl;			/* 0x00 */

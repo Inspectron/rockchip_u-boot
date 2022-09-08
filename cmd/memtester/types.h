@@ -17,15 +17,13 @@
 
 typedef unsigned long ul;
 typedef unsigned long long ull;
-/* for all rk chip, dram bandwidth both 32bit */
-typedef unsigned int volatile u32v;
+typedef unsigned long volatile ulv;
 typedef unsigned char volatile u8v;
 typedef unsigned short volatile u16v;
 
 struct test {
 	char *name;
-	int (*fp)(u32v *bufa, u32v *bufb, size_t count,
-		  ul fix_bit, ul fix_level);
+	int (*fp)(ulv *bufa, ulv *bufb, size_t count);
 };
 
 #endif /* __MEMTESTER_TYPES_H */

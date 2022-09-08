@@ -96,6 +96,11 @@
 #define CONFIG_ENV_OVERWRITE
 
 /*-----------------------------------------------------------------------
+ * FLASH configuration
+ */
+#define CONFIG_SPI
+
+/*-----------------------------------------------------------------------
  * Environment configuration
  */
 #define CONFIG_ENV_SIZE			0x01000

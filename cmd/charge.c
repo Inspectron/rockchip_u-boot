@@ -10,17 +10,13 @@
 #include <power/charge_display.h>
 #include <power/charge_animation.h>
 
-static int do_charge_display(cmd_tbl_t *cmdtp, int flag, int argc,
-			     char *const argv[])
+static int charge_display(cmd_tbl_t *cmdtp, int flag, int argc,
+			  char *const argv[])
 {
-
-	struct charge_animation_pdata *pdata;
+	int on_soc, on_voltage, screen_voltage;
+	int ret, save[3];
 	struct udevice *dev;
-	int screen_voltage;
-	int on_voltage;
-	int on_soc;
-	int save[3];
-	int ret;
+	struct charge_animation_pdata *pdata;
 
 	if (argc != 4 && argc != 1)
 		return CMD_RET_USAGE;
@@ -65,7 +61,7 @@ static int do_charge_display(cmd_tbl_t *cmdtp, int flag, int argc,
 	return 0;
 }
 
-U_BOOT_CMD(charge, 4, 0, do_charge_display,
+U_BOOT_CMD(charge, 4, 0, charge_display,
 	   "Charge display",
 	   "-charge\n"
 	   "-charge <power on soc> <power on voltage> <screen on voltage>"

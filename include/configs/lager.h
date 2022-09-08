@@ -41,6 +41,7 @@
 
 /* SPI */
 #define CONFIG_SPI
+#define CONFIG_SH_QSPI
 
 /* SH Ether */
 #define CONFIG_SH_ETHER

@@ -8,11 +8,10 @@
 
 #include <common.h>
 #include <spl.h>
-#include <linux/libfdt.h>
+#include <libfdt.h>
 #include <nand.h>
 #include <linux/io.h>
-#include <linux/printk.h>
-#include <../drivers/mtd/nand/raw/denali.h>
+#include <../drivers/mtd/nand/denali.h>
 
 #include "init.h"
 

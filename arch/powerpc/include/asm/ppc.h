@@ -13,8 +13,8 @@
 
 #ifndef __ASSEMBLY__
 
-#if defined(CONFIG_MPC8xx)
-#include <asm/immap_8xx.h>
+#if defined(CONFIG_8xx)
+#include <asm/8xx_immap.h>
 #endif
 #ifdef CONFIG_MPC86xx
 #include <mpc86xx.h>

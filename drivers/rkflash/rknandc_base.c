@@ -98,8 +98,6 @@ static int rockchip_nand_probe(struct udevice *udev)
 					      nandc_flash_op.vendor_write);
 #endif
 		debug("%s probe success\n", __func__);
-	} else {
-		pr_err("ret %d\n", ret);
 	}
 
 	return ret;

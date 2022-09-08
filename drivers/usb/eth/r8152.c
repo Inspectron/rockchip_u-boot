@@ -11,6 +11,7 @@
 #include <malloc.h>
 #include <memalign.h>
 #include <usb.h>
+#include <usb/lin_gadget_compat.h>
 #include <linux/mii.h>
 #include <linux/bitops.h>
 #include "usb_ether.h"

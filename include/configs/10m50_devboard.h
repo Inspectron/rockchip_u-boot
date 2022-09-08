@@ -24,6 +24,7 @@
  */
 #define CONFIG_SYS_MAX_FLASH_BANKS	1
 #define CONFIG_SYS_MAX_FLASH_SECT	1024
+#define CONFIG_MTD_DEVICE
 
 /*
  * NET options

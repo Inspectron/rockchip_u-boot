@@ -10,16 +10,13 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <errno.h>
 #include <getopt.h>
-#include <fcntl.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-#include "fdt_host.h"
+#include "../include/libfdt.h"
 #include "libfdt_internal.h"
 
 /* Define DEBUG to get some debugging output on stderr */

@@ -23,7 +23,6 @@ enum dfu_device_type {
 	DFU_DEV_NAND,
 	DFU_DEV_RAM,
 	DFU_DEV_SF,
-	DFU_DEV_MTD,
 };
 
 enum dfu_layout {
@@ -58,17 +57,6 @@ struct mmc_internal_data {
 };
 
 struct nand_internal_data {
-	/* RAW programming */
-	u64 start;
-	u64 size;
-
-	unsigned int dev;
-	unsigned int part;
-	/* for nand/ubi use */
-	unsigned int ubi;
-};
-
-struct mtd_internal_data {
 	/* RAW programming */
 	u64 start;
 	u64 size;
@@ -120,7 +108,6 @@ struct dfu_entity {
 		struct nand_internal_data nand;
 		struct ram_internal_data ram;
 		struct sf_internal_data sf;
-		struct mtd_internal_data mtd;
 	} data;
 
 	int (*get_medium_size)(struct dfu_entity *dfu, u64 *size);
@@ -223,17 +210,6 @@ static inline int dfu_fill_entity_mmc(struct dfu_entity *dfu, char *devstr,
 				      char *s)
 {
 	puts("MMC support not available!\n");
-	return -1;
-}
-#endif
-
-#ifdef CONFIG_DFU_MTD
-extern int dfu_fill_entity_mtd(struct dfu_entity *dfu, char *devstr, char *s);
-#else
-static inline int dfu_fill_entity_mtd(struct dfu_entity *dfu, char *devstr,
-				      char *s)
-{
-	puts("MTD support not available!\n");
 	return -1;
 }
 #endif

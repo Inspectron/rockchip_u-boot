@@ -28,13 +28,11 @@ struct efi_disk_obj {
 	/* EFI Interface Media descriptor struct, referenced by ops */
 	struct efi_block_io_media media;
 	/* EFI device path to this block device */
-	struct efi_device_path *dp;
-	/* partition # */
-	unsigned int part;
+	struct efi_device_path_file_path *dp;
 	/* Offset into disk for simple partitions */
 	lbaint_t offset;
 	/* Internal block device */
-	struct blk_desc *desc;
+	const struct blk_desc *desc;
 };
 
 static efi_status_t EFIAPI efi_disk_reset(struct efi_block_io *this,
@@ -174,26 +172,26 @@ static const struct efi_block_io block_io_disk_template = {
 
 static void efi_disk_add_dev(const char *name,
 			     const char *if_typename,
-			     struct blk_desc *desc,
+			     const struct blk_desc *desc,
 			     int dev_index,
-			     lbaint_t offset,
-			     unsigned int part)
+			     lbaint_t offset)
 {
 	struct efi_disk_obj *diskobj;
+	struct efi_device_path_file_path *dp;
+	int objlen = sizeof(*diskobj) + (sizeof(*dp) * 2);
 
 	/* Don't add empty devices */
 	if (!desc->lba)
 		return;
 
-	diskobj = calloc(1, sizeof(*diskobj));
+	diskobj = calloc(1, objlen);
 
 	/* Fill in object data */
-	diskobj->dp = efi_dp_from_part(desc, part);
-	diskobj->part = part;
+	dp = (void *)&diskobj[1];
 	diskobj->parent.protocols[0].guid = &efi_block_io_guid;
 	diskobj->parent.protocols[0].protocol_interface = &diskobj->ops;
 	diskobj->parent.protocols[1].guid = &efi_guid_device_path;
-	diskobj->parent.protocols[1].protocol_interface = diskobj->dp;
+	diskobj->parent.protocols[1].protocol_interface = dp;
 	diskobj->parent.handle = diskobj;
 	diskobj->ops = block_io_disk_template;
 	diskobj->ifname = if_typename;
@@ -208,6 +206,17 @@ static void efi_disk_add_dev(const char *name,
 	diskobj->media.io_align = desc->blksz;
 	diskobj->media.last_block = desc->lba - offset;
 	diskobj->ops.media = &diskobj->media;
+
+	/* Fill in device path */
+	diskobj->dp = dp;
+	dp[0].dp.type = DEVICE_PATH_TYPE_MEDIA_DEVICE;
+	dp[0].dp.sub_type = DEVICE_PATH_SUB_TYPE_FILE_PATH;
+	dp[0].dp.length = sizeof(*dp);
+	ascii2unicode(dp[0].str, name);
+
+	dp[1].dp.type = DEVICE_PATH_TYPE_END;
+	dp[1].dp.sub_type = DEVICE_PATH_SUB_TYPE_END;
+	dp[1].dp.length = sizeof(*dp);
 
 	/* Hook up to the device list */
 	list_add_tail(&diskobj->parent.link, &efi_obj_list);
@@ -227,18 +236,14 @@ static int efi_disk_create_eltorito(struct blk_desc *desc,
 	if (desc->part_type != PART_TYPE_ISO)
 		return 0;
 
-	/* and devices for each partition: */
 	while (!part_get_info(desc, part, &info)) {
 		snprintf(devname, sizeof(devname), "%s:%d", pdevname,
 			 part);
 		efi_disk_add_dev(devname, if_typename, desc, diskid,
-				 info.start, part);
+				 info.start);
 		part++;
 		disks++;
 	}
-
-	/* ... and add block device: */
-	efi_disk_add_dev(devname, if_typename, desc, diskid, 0, 0);
 #endif
 
 	return disks;
@@ -266,22 +271,9 @@ int efi_disk_register(void)
 	     uclass_next_device_check(&dev)) {
 		struct blk_desc *desc = dev_get_uclass_platdata(dev);
 		const char *if_typename = dev->driver->name;
-		disk_partition_t info;
-		int part = 1;
 
 		printf("Scanning disk %s...\n", dev->name);
-
-		/* add devices for each partition: */
-		while (!part_get_info(desc, part, &info)) {
-			efi_disk_add_dev(dev->name, if_typename, desc,
-					 desc->devnum, 0, part);
-			part++;
-		}
-
-		/* ... and add block device: */
-		efi_disk_add_dev(dev->name, if_typename, desc,
-				 desc->devnum, 0, 0);
-
+		efi_disk_add_dev(dev->name, if_typename, desc, desc->devnum, 0);
 		disks++;
 
 		/*
@@ -317,7 +309,7 @@ int efi_disk_register(void)
 
 			snprintf(devname, sizeof(devname), "%s%d",
 				 if_typename, i);
-			efi_disk_add_dev(devname, if_typename, desc, i, 0, 0);
+			efi_disk_add_dev(devname, if_typename, desc, i, 0);
 			disks++;
 
 			/*

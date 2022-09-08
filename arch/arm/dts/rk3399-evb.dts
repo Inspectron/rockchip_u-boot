@@ -11,41 +11,15 @@
 #include "rk3399-sdram-lpddr3-4GB-1600.dtsi"
 #include "rk3399-u-boot.dtsi"
 #include <linux/media-bus-format.h>
-#include <dt-bindings/input/input.h>
 
 / {
 	model = "Rockchip RK3399 Evaluation Board";
 	compatible = "rockchip,rk3399-evb", "rockchip,rk3399",
 		     "google,rk3399evb-rev2";
 
-	/* RK3399 evb board */
-	rk_key0 {
-		u-boot,dm-pre-reloc;
-		compatible = "rockchip,key";
-		status = "okay";
-		io-channels = <&saradc 1>;
-
-		vol-up-key0 {
-			u-boot,dm-pre-reloc;
-			linux,code = <KEY_VOLUMEUP>;
-			label = "volume up";
-			rockchip,adc_value = <1>;
-		};
-	};
-
-	/* RK3399PRO evb board */
-	rk_key1 {
-		u-boot,dm-pre-reloc;
-		compatible = "rockchip,key";
-		status = "okay";
-		io-channels = <&saradc 2>;
-
-		vol-up-key1 {
-			u-boot,dm-pre-reloc;
-			linux,code = <KEY_VOLUMEUP>;
-			label = "volume up";
-			rockchip,adc_value = <10>;
-		};
+	chosen {
+		stdout-path = &uart2;
+		u-boot,spl-boot-order = &sdhci, &sdmmc;
 	};
 
 	vdd_center: vdd-center {
@@ -215,14 +189,6 @@
 
 };
 
-&crypto {
-	status = "okay";
-};
-
-&uart2 {
-	status = "okay";
-};
-
 &emmc_phy {
 	status = "okay";
 };
@@ -256,14 +222,6 @@
 	status = "okay";
 };
 
-&tcphy0 {
-	status = "okay";
-};
-
-&tcphy1 {
-	status = "okay";
-};
-
 &usb_host0_ehci {
 	status = "okay";
 };
@@ -272,19 +230,8 @@
 	status = "okay";
 };
 
-&usbdrd3_0 {
-	status = "okay";
-};
-
-&usbdrd3_1 {
-	status = "okay";
-};
-
-&usbdrd_dwc3_0 {
-	status = "okay";
-};
-
-&usbdrd_dwc3_1 {
+&dwc3_typec0 {
+	vbus-supply = <&vcc5v0_typec0>;
 	status = "okay";
 };
 
@@ -293,6 +240,11 @@
 };
 
 &usb_host1_ohci {
+	status = "okay";
+};
+
+&dwc3_typec1 {
+	vbus-supply = <&vcc5v0_typec1>;
 	status = "okay";
 };
 

@@ -9,15 +9,6 @@
 		mmc0 = &emmc;
 		mmc1 = &sdmmc;
 	};
-
-	chosen {
-		stdout-path = "serial2:115200n8";
-	};
-};
-
-&psci {
-	u-boot,dm-pre-reloc;
-	status = "okay";
 };
 
 &uart2 {
@@ -27,15 +18,9 @@
 
 &sdmmc {
 	u-boot,dm-pre-reloc;
-	status = "okay";
 };
 
 &emmc {
-	u-boot,dm-pre-reloc;
-	status = "okay";
-};
-
-&nandc0 {
 	u-boot,dm-pre-reloc;
 	status = "okay";
 };
@@ -56,31 +41,6 @@
 	u-boot,dm-pre-reloc;
 };
 
-&crypto {
-	u-boot,dm-pre-reloc;
-};
-
 &grf {
 	u-boot,dm-pre-reloc;
-};
-
-&u2phy {
-	u-boot,dm-pre-reloc;
-};
-
-&u2phy_otg {
-	u-boot,dm-pre-reloc;
-};
-
-&usb_otg {
-	u-boot,dm-pre-reloc;
-};
-
-&gpio2 {
-	u-boot,dm-pre-reloc;
-};
-
-&saradc {
-	u-boot,dm-spl;
-	status = "okay";
 };

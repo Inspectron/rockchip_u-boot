@@ -50,7 +50,6 @@
 	defined(CONFIG_CMD_PART) || \
 	defined(CONFIG_CMD_GPT) || \
 	defined(CONFIG_MMC) || \
-	defined(CONFIG_MTD_BLK) || \
 	defined(CONFIG_NVME) || \
 	defined(CONFIG_SYSTEMACE) || \
 	defined(CONFIG_SANDBOX)   || \

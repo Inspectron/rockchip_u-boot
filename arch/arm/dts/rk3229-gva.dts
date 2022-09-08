@@ -7,7 +7,6 @@
 /dts-v1/;
 
 #include "rk322x.dtsi"
-#include "rk322x-u-boot.dtsi"
 #include <dt-bindings/input/input.h>
 
 / {
@@ -289,10 +288,12 @@
 };
 
 &emmc {
+	u-boot,dm-pre-reloc;
 	status = "okay";
 };
 
 &uart2 {
+	u-boot,dm-pre-reloc;
 	status = "okay";
 };
 

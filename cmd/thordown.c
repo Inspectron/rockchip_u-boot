@@ -31,7 +31,7 @@ int do_thor_down(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 		goto done;
 
 	int controller_index = simple_strtoul(usb_controller, NULL, 0);
-	ret = usb_gadget_initialize(controller_index);
+	ret = board_usb_init(controller_index, USB_INIT_DEVICE);
 	if (ret) {
 		pr_err("USB init failed: %d", ret);
 		ret = CMD_RET_FAILURE;
@@ -56,7 +56,7 @@ int do_thor_down(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 
 exit:
 	g_dnl_unregister();
-	usb_gadget_release(controller_index);
+	board_usb_cleanup(controller_index, USB_INIT_DEVICE);
 done:
 	dfu_free_entities();
 

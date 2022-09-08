@@ -770,7 +770,7 @@ int sdram_init(void)
 #if !CONFIG_IS_ENABLED(RAM)
 /*
  * When CONFIG_RAM is enabled, the dram_init() function is implemented
- * in sdram.c.
+ * in sdram_common.c.
  */
 int dram_init(void)
 {

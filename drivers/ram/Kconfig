@@ -33,25 +33,3 @@ config STM32_SDRAM
 	  STM32F7 family devices support flexible memory controller(FMC) to
 	  support external memories like sdram, psram & nand.
 	  This driver is for the sdram memory interface with the FMC.
-
-config DM_RAMDISK
-	bool "Enable Driver Model for RAMDISK drivers"
-	depends on DM
-	help
-	  This enables the Ramdisk uclass support. These appear as block devices
-	  in U-Boot.
-
-config RAMDISK_RO
-	bool "Enable read only ramdisk support"
-	depends on DM_RAMDISK
-	select RKRAM_PARTITION
-	help
-	  This enables the read only ramdisk support.
-
-config DM_DMC
-	bool "Enable Driver Model for DMC drivers"
-	depends on DM
-	help
-	  This config enables the driver-model DMC support.
-
-source "drivers/ram/rockchip/Kconfig"

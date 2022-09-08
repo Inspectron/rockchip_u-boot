@@ -210,7 +210,7 @@ void efi_net_set_dhcp_ack(void *pkt, int len)
 }
 
 /* This gets called from do_bootefi_exec(). */
-int efi_net_register(void)
+int efi_net_register(void **handle)
 {
 	struct efi_net_obj *netobj;
 	struct efi_device_path_mac_addr dp_net = {
@@ -267,6 +267,9 @@ int efi_net_register(void)
 
 	/* Hook net up to the device list */
 	list_add_tail(&netobj->parent.link, &efi_obj_list);
+
+	if (handle)
+		*handle = &netobj->net;
 
 	return 0;
 }

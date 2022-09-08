@@ -27,7 +27,7 @@ int rc_get_repeat(struct udevice *dev)
 	return ops->get_repeat(dev);
 }
 
-UCLASS_DRIVER(rc) = {
+UCLASS_DRIVER(key) = {
 	.id		= UCLASS_RC,
 	.name		= "rc",
 };

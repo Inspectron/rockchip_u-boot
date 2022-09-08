@@ -19,7 +19,7 @@
 /*
  * Standard filesystems
  */
-#define CONFIG_BZIP2
+#define CONFIG_SYS_MVFS
 
 /*
  * mv-plug-common.h should be defined after CMD configs since it used them

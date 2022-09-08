@@ -17,7 +17,7 @@ int timer_init(void)
 	gd->arch.tbl = 0;
 	gd->arch.tbu = 0;
 
-	gd->arch.timer_rate_hz = CONFIG_SYS_HZ_CLOCK;
+	gd->arch.timer_rate_hz = CONFIG_SYS_HZ_CLOCK / CONFIG_SYS_HZ;
 	return 0;
 }
 
@@ -34,9 +34,27 @@ unsigned long long get_ticks(void)
 }
 
 
+ulong get_timer(ulong base)
+{
+	return lldiv(get_ticks(), gd->arch.timer_rate_hz) - base;
+}
+
 ulong timer_get_boot_us(void)
 {
-	return lldiv(get_ticks(), CONFIG_SYS_HZ_CLOCK / 1000000);
+	return lldiv(get_ticks(), CONFIG_SYS_HZ_CLOCK / (CONFIG_SYS_HZ * 1000));
+}
+
+void __udelay(unsigned long usec)
+{
+	unsigned long long endtime;
+
+	endtime = lldiv((unsigned long long)usec * gd->arch.timer_rate_hz,
+			1000UL);
+
+	endtime += get_ticks();
+
+	while (get_ticks() < endtime)
+		;
 }
 
 ulong get_tbclk(void)

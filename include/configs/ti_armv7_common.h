@@ -98,6 +98,11 @@
 #define CONFIG_DM_I2C_COMPAT
 #endif
 
+/* McSPI IP block */
+#define CONFIG_SPI
+
+/* GPIO block */
+
 /*
  * The following are general good-enough settings for U-Boot.  We set a
  * large malloc pool as we generally have a lot of DDR, and we opt for
@@ -129,6 +134,9 @@
  * mtdparts, both for ease of use in U-Boot and for passing information
  * on to the Linux kernel.
  */
+#if defined(CONFIG_SPI_BOOT) || defined(CONFIG_NOR) || defined(CONFIG_NAND) || defined(CONFIG_NAND_DAVINCI)
+#define CONFIG_MTD_DEVICE		/* Required for mtdparts */
+#endif
 
 #define CONFIG_SUPPORT_RAW_INITRD
 

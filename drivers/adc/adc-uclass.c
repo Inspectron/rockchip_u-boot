@@ -47,7 +47,6 @@ static int check_channel(struct udevice *dev, int value, bool number_or_mask,
 	return -EINVAL;
 }
 
-#ifdef CONFIG_ADC_REQ_REGULATOR
 static int adc_supply_enable(struct udevice *dev)
 {
 	struct adc_uclass_platdata *uc_pdata = dev_get_uclass_platdata(dev);
@@ -69,9 +68,6 @@ static int adc_supply_enable(struct udevice *dev)
 
 	return ret;
 }
-#else
-static inline int adc_supply_enable(struct udevice *dev) { return 0; }
-#endif
 
 int adc_data_mask(struct udevice *dev, unsigned int *data_mask)
 {
@@ -260,7 +256,6 @@ try_manual:
 	return _adc_channels_single_shot(dev, channel_mask, channels);
 }
 
-#ifdef CONFIG_ADC_REQ_REGULATOR
 static int adc_vdd_platdata_update(struct udevice *dev)
 {
 	struct adc_uclass_platdata *uc_pdata = dev_get_uclass_platdata(dev);
@@ -285,11 +280,7 @@ static int adc_vdd_platdata_update(struct udevice *dev)
 
 	return 0;
 }
-#else
-static inline int adc_vdd_platdata_update(struct udevice *dev) { return 0; }
-#endif
 
-#ifdef CONFIG_ADC_REQ_REGULATOR
 static int adc_vss_platdata_update(struct udevice *dev)
 {
 	struct adc_uclass_platdata *uc_pdata = dev_get_uclass_platdata(dev);
@@ -308,9 +299,6 @@ static int adc_vss_platdata_update(struct udevice *dev)
 
 	return 0;
 }
-#else
-static inline int adc_vss_platdata_update(struct udevice *dev) { return 0; }
-#endif
 
 int adc_vdd_value(struct udevice *dev, int *uV)
 {

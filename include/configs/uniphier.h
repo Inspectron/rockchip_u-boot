@@ -26,6 +26,7 @@
 #define CONFIG_TIMESTAMP
 
 /* FLASH related */
+#define CONFIG_MTD_DEVICE
 
 #define CONFIG_SMC911X_32_BIT
 /* dummy: referenced by examples/standalone/smc911x_eeprom.c */

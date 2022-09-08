@@ -519,14 +519,6 @@
 	status = "okay";
 };
 
-&tcphy0 {
-	status = "okay";
-};
-
-&tcphy1 {
-	status = "okay";
-};
-
 &uart2 {
 	status = "okay";
 };
@@ -539,19 +531,7 @@
 	status = "disabled";
 };
 
-&usbdrd3_0 {
-	status = "okay";
-};
-
-&usbdrd3_1 {
-	status = "okay";
-};
-
-&usbdrd_dwc3_0 {
-	status = "okay";
-};
-
-&usbdrd_dwc3_1 {
+&dwc3_typec0 {
 	status = "okay";
 };
 
@@ -561,6 +541,11 @@
 
 &usb_host1_ohci {
 	status = "disabled";
+};
+
+&dwc3_typec1 {
+	status = "okay";
+	tsd,usb-port-power = "usbhub_enable";
 };
 
 &vopb {

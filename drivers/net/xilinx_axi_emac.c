@@ -359,19 +359,13 @@ static int axi_ethernet_init(struct axidma_priv *priv)
 	 * will be valid until this bit is valid.
 	 * The bit is always a 1 for all other PHY interfaces.
 	 */
-	if (!priv->eth_hasnobuf) {
-		err = wait_for_bit_le32(&regs->is, XAE_INT_MGTRDY_MASK,
-					true, 200, false);
-		if (err) {
-			printf("%s: Timeout\n", __func__);
-			return 1;
-		}
-
-		/*
-		 * Stop the device and reset HW
-		 * Disable interrupts
-		 */
-		writel(0, &regs->ie);
+	while (timeout && (!(in_be32(&regs->is) & XAE_INT_MGTRDY_MASK))) {
+		timeout--;
+		udelay(1);
+	}
+	if (!timeout) {
+		printf("%s: Timeout\n", __func__);
+		return 1;
 	}
 
 	/* Stop the device and reset HW */

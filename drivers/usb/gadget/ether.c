@@ -105,6 +105,9 @@ struct eth_dev {
 	struct usb_gadget	*gadget;
 	struct usb_request	*req;		/* for control responses */
 	struct usb_request	*stat_req;	/* for cdc & rndis status */
+#ifdef CONFIG_DM_USB
+	struct udevice		*usb_udev;
+#endif
 
 	u8			config;
 	struct usb_ep		*in_ep, *out_ep, *status_ep;
@@ -270,8 +273,8 @@ static inline int BITRATE(struct usb_gadget *g)
  * static ushort idProduct;
  */
 
-#if defined(CONFIG_USB_GADGET_MANUFACTURER)
-static char *iManufacturer = CONFIG_USB_GADGET_MANUFACTURER;
+#if defined(CONFIG_USBNET_MANUFACTURER)
+static char *iManufacturer = CONFIG_USBNET_MANUFACTURER;
 #else
 static char *iManufacturer = "U-Boot";
 #endif
@@ -2070,11 +2073,11 @@ static int eth_bind(struct usb_gadget *gadget)
 	 * to choose the right configuration otherwise.
 	 */
 	if (rndis) {
-#if defined(CONFIG_USB_GADGET_VENDOR_NUM) && defined(CONFIG_USB_GADGET_PRODUCT_NUM)
+#if defined(CONFIG_USB_RNDIS_VENDOR_ID) && defined(CONFIG_USB_RNDIS_PRODUCT_ID)
 		device_desc.idVendor =
-			__constant_cpu_to_le16(CONFIG_USB_GADGET_VENDOR_NUM);
+			__constant_cpu_to_le16(CONFIG_USB_RNDIS_VENDOR_ID);
 		device_desc.idProduct =
-			__constant_cpu_to_le16(CONFIG_USB_GADGET_PRODUCT_NUM);
+			__constant_cpu_to_le16(CONFIG_USB_RNDIS_PRODUCT_ID);
 #else
 		device_desc.idVendor =
 			__constant_cpu_to_le16(RNDIS_VENDOR_NUM);
@@ -2089,9 +2092,9 @@ static int eth_bind(struct usb_gadget *gadget)
 	 * supporting one submode of the "SAFE" variant of MDLM.)
 	 */
 	} else {
-#if defined(CONFIG_USB_GADGET_VENDOR_NUM) && defined(CONFIG_USB_GADGET_PRODUCT_NUM)
-		device_desc.idVendor = cpu_to_le16(CONFIG_USB_GADGET_VENDOR_NUM);
-		device_desc.idProduct = cpu_to_le16(CONFIG_USB_GADGET_PRODUCT_NUM);
+#if defined(CONFIG_USB_CDC_VENDOR_ID) && defined(CONFIG_USB_CDC_PRODUCT_ID)
+		device_desc.idVendor = cpu_to_le16(CONFIG_USB_CDC_VENDOR_ID);
+		device_desc.idProduct = cpu_to_le16(CONFIG_USB_CDC_PRODUCT_ID);
 #else
 		if (!cdc) {
 			device_desc.idVendor =
@@ -2338,19 +2341,40 @@ fail:
 }
 
 /*-------------------------------------------------------------------------*/
-static void _usb_eth_halt(struct ether_priv *priv);
+
+#ifdef CONFIG_DM_USB
+int dm_usb_init(struct eth_dev *e_dev)
+{
+	struct udevice *dev = NULL;
+	int ret;
+
+	ret = uclass_first_device(UCLASS_USB_DEV_GENERIC, &dev);
+	if (!dev || ret) {
+		pr_err("No USB device found\n");
+		return -ENODEV;
+	}
+
+	e_dev->usb_udev = dev;
+
+	return ret;
+}
+#endif
 
 static int _usb_eth_init(struct ether_priv *priv)
 {
 	struct eth_dev *dev = &priv->ethdev;
 	struct usb_gadget *gadget;
 	unsigned long ts;
-	int ret;
 	unsigned long timeout = USB_CONNECT_TIMEOUT;
 
-	ret = usb_gadget_initialize(0);
-	if (ret)
-		return ret;
+#ifdef CONFIG_DM_USB
+	if (dm_usb_init(dev)) {
+		pr_err("USB ether not found\n");
+		return -ENODEV;
+	}
+#else
+	board_usb_init(0, USB_INIT_DEVICE);
+#endif
 
 	/* Configure default mac-addresses for the USB ethernet device */
 #ifdef CONFIG_USBNET_DEV_ADDR
@@ -2413,7 +2437,6 @@ static int _usb_eth_init(struct ether_priv *priv)
 	rx_submit(dev, dev->rx_req, 0);
 	return 0;
 fail:
-	_usb_eth_halt(priv);
 	return -1;
 }
 
@@ -2493,7 +2516,7 @@ static int _usb_eth_recv(struct ether_priv *priv)
 	return 0;
 }
 
-static void _usb_eth_halt(struct ether_priv *priv)
+void _usb_eth_halt(struct ether_priv *priv)
 {
 	struct eth_dev *dev = &priv->ethdev;
 
@@ -2523,7 +2546,9 @@ static void _usb_eth_halt(struct ether_priv *priv)
 	}
 
 	usb_gadget_unregister_driver(&priv->eth_driver);
-	usb_gadget_release(0);
+#ifndef CONFIG_DM_USB
+	board_usb_cleanup(0, USB_INIT_DEVICE);
+#endif
 }
 
 #ifndef CONFIG_DM_ETH
@@ -2679,7 +2704,7 @@ int usb_ether_init(void)
 	struct udevice *usb_dev;
 	int ret;
 
-	ret = uclass_first_device(UCLASS_USB_GADGET_GENERIC, &usb_dev);
+	ret = uclass_first_device(UCLASS_USB_DEV_GENERIC, &usb_dev);
 	if (!usb_dev || ret) {
 		pr_err("No USB device found\n");
 		return ret;

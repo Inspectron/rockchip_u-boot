@@ -8,6 +8,7 @@
 #include <asm/assembler.h>
 
 ENTRY(spl_optee_entry)
-	mov lr, r1
+	ldr lr, =CONFIG_SYS_TEXT_BASE
+	ldr r1, =CONFIG_SYS_TEXT_BASE
 	mov pc, r3
 ENDPROC(spl_optee_entry)

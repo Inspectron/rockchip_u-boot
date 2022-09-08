@@ -14,10 +14,6 @@
 	model = "Rockchip PX3SE Evaluation board";
 	compatible = "rockchip,px3se-evb", "rockchip,px3se";
 
-	chosen {
-		stdout-path = &uart1;
-	};
-
 	adc-keys {
 		compatible = "adc-keys";
 		io-channels = <&saradc 1>;
@@ -36,6 +32,10 @@
 			linux,code = <KEY_VOLUMEDOWN>;
 			press-threshold-microvolt = <300000>;
 		};
+	};
+
+	chosen {
+		stdout-path = &uart1;
 	};
 
 	vcc50_otg: vcc50-otg {
@@ -71,6 +71,8 @@
 };
 
 &uart1 {
+	clock-frequency = <24000000>;
+	u-boot,dm-pre-reloc;
 	status = "okay";
 };
 

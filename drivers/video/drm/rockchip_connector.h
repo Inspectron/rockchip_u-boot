@@ -7,6 +7,8 @@
 #ifndef _ROCKCHIP_CONNECTOR_H_
 #define _ROCKCHIP_CONNECTOR_H_
 
+#include "rockchip_mipi_dsi.h"
+
 struct rockchip_connector {
 	const struct rockchip_connector_funcs *funcs;
 
@@ -14,12 +16,6 @@ struct rockchip_connector {
 };
 
 struct rockchip_connector_funcs {
-	/*
-	 * pre init connector, prepare some parameter out_if, this will be
-	 * used by rockchip_display.c and vop
-	 */
-	int (*pre_init)(struct display_state *state);
-
 	/*
 	 * init connector, prepare resource to ensure
 	 * detect and get_timing can works
@@ -62,6 +58,9 @@ struct rockchip_connector_funcs {
 	 * Save data to dts, then you can share data to kernel space.
 	 */
 	int (*fixup_dts)(struct display_state *state, void *blob);
+	/* transmit a DSI packet */
+	ssize_t (*transfer)(struct display_state *state,
+			    const struct mipi_dsi_msg *msg);
 };
 
 const struct rockchip_connector *

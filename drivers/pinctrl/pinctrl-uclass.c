@@ -5,7 +5,6 @@
  */
 
 #include <common.h>
-#include <linux/libfdt.h>
 #include <linux/err.h>
 #include <linux/list.h>
 #include <dm.h>
@@ -180,14 +179,11 @@ static int pinctrl_select_state_simple(struct udevice *dev)
 	int ret;
 
 	/*
-	 * For most system, there is only one pincontroller device. But in
-	 * case of multiple pincontroller devices, probe the one with sequence
-	 * number 0 (defined by alias) to avoid race condition.
+	 * For simplicity, assume the first device of PINCTRL uclass
+	 * is the correct one.  This is most likely OK as there is
+	 * usually only one pinctrl device on the system.
 	 */
-	ret = uclass_get_device_by_seq(UCLASS_PINCTRL, 0, &pctldev);
-	if (ret)
-		/* if not found, get the first one */
-		ret = uclass_get_device(UCLASS_PINCTRL, 0, &pctldev);
+	ret = uclass_get_device(UCLASS_PINCTRL, 0, &pctldev);
 	if (ret)
 		return ret;
 
@@ -245,16 +241,6 @@ int pinctrl_get_gpio_mux(struct udevice *dev, int banknum, int index)
 		return -ENOSYS;
 
 	return ops->get_gpio_mux(dev, banknum, index);
-}
-
-int pinctrl_get_pins_count(struct udevice *dev)
-{
-	struct pinctrl_ops *ops = pinctrl_get_ops(dev);
-
-	if (!ops->get_pins_count)
-		return -ENOSYS;
-
-	return ops->get_pins_count(dev);
 }
 
 /**

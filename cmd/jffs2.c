@@ -80,7 +80,7 @@
 #include <cramfs/cramfs_fs.h>
 
 #if defined(CONFIG_CMD_NAND)
-#include <linux/mtd/rawnand.h>
+#include <linux/mtd/nand.h>
 #include <nand.h>
 #endif
 

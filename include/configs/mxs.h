@@ -99,6 +99,7 @@
  */
 
 /* APBH DMA */
+#define CONFIG_APBH_DMA
 
 /* GPIO */
 #define CONFIG_MXS_GPIO
@@ -136,6 +137,7 @@
 
 /* NAND */
 #ifdef CONFIG_CMD_NAND
+#define CONFIG_NAND_MXS
 #define CONFIG_SYS_MAX_NAND_DEVICE	1
 #define CONFIG_SYS_NAND_BASE		0x60000000
 #define CONFIG_SYS_NAND_5_ADDR_CYCLE
@@ -149,6 +151,7 @@
 /* SPI */
 #ifdef CONFIG_CMD_SPI
 #define CONFIG_HARD_SPI
+#define CONFIG_MXS_SPI
 #define CONFIG_SPI_HALF_DUPLEX
 #endif
 

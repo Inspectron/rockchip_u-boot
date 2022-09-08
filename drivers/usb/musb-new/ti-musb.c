@@ -20,7 +20,7 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
-#if CONFIG_IS_ENABLED(DM_USB)
+#ifdef CONFIG_DM_USB
 
 /* USB 2.0 PHY Control */
 #define CM_PHY_PWRDN			(1 << 0)
@@ -205,12 +205,14 @@ U_BOOT_DRIVER(ti_musb_host) = {
 
 static int ti_musb_wrapper_bind(struct udevice *parent)
 {
-	ofnode node;
+	const void *fdt = gd->fdt_blob;
+	int node;
 	int ret;
 
-	ofnode_for_each_subnode(node, parent->node) {
+	for (node = fdt_first_subnode(fdt, dev_of_offset(parent)); node > 0;
+	     node = fdt_next_subnode(fdt, node)) {
 		struct udevice *dev;
-		const char *name = ofnode_get_name(node);
+		const char *name = fdt_get_name(fdt, node, NULL);
 		enum usb_dr_mode dr_mode;
 		struct driver *drv;
 
@@ -224,11 +226,8 @@ static int ti_musb_wrapper_bind(struct udevice *parent)
 			break;
 		case USB_DR_MODE_HOST:
 			/* Bind MUSB host */
-			ret = device_bind_driver_to_node(parent,
-							 "ti-musb-host",
-							 name,
-							 node,
-							 &dev);
+			ret = device_bind_driver_to_node(parent, "ti-musb-host",
+					name, offset_to_ofnode(node), &dev);
 			if (ret) {
 				pr_err("musb - not able to bind usb host node\n");
 				return ret;
@@ -253,4 +252,4 @@ U_BOOT_DRIVER(ti_musb_wrapper) = {
 	.bind = ti_musb_wrapper_bind,
 };
 
-#endif /* CONFIG_IS_ENABLED(DM_USB) */
+#endif /* CONFIG_DM_USB */

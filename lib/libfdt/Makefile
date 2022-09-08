@@ -11,7 +11,6 @@ obj-y += \
 	fdt_wip.o \
 	fdt_strerror.o \
 	fdt_sw.o \
-	fdt_rw.o \
 	fdt_empty_tree.o \
 	fdt_addresses.o
 
@@ -19,9 +18,9 @@ obj-$(CONFIG_OF_LIBFDT_OVERLAY) += fdt_overlay.o
 
 # Locally modified for U-Boot.
 # TODO: split out the local modifiction.
-obj-y += fdt_ro.o
+obj-y += \
+	fdt_ro.o \
+	fdt_rw.o
 
 # U-Boot own file
 obj-y += fdt_region.o
-
-ccflags-y := -I$(srctree)/scripts/dtc/libfdt

@@ -51,6 +51,7 @@
 	adc-keys {
 		compatible = "adc-keys";
 		io-channels = <&saradc 1>;
+		keyup-threshold-microvolt = <1800000>;
 
 		volup-key {
 			linux,code = <KEY_VOLUMEUP>;
@@ -173,6 +174,10 @@
 };
 
 &route_edp {
+	status = "okay";
+};
+
+&route_hdmi {
 	status = "okay";
 };
 
@@ -504,6 +509,10 @@
 };
 
 &vopl {
+	status = "okay";
+};
+
+&vopb {
 	status = "okay";
 };
 

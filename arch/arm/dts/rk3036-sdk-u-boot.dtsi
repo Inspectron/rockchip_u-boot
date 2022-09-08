@@ -10,16 +10,6 @@
 	u-boot,dm-pre-reloc;
 };
 
-&nandc {
-	u-boot,dm-pre-reloc;
-	status = "okay";
-};
-
-&sfc {
-	u-boot,dm-pre-reloc;
-	status = "okay";
-};
-
 &grf {
 	u-boot,dm-pre-reloc;
 };
@@ -31,9 +21,3 @@
 &uart2 {
 	u-boot,dm-pre-reloc;
 };
-
-&psci {
-	u-boot,dm-pre-reloc;
-	status = "okay";
-};
-

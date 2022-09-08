@@ -14,7 +14,6 @@
 #include <asm/spl.h>
 #include <spl.h>
 #include <asm/mach-imx/hab.h>
-#include <g_dnl.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -83,15 +82,6 @@ u32 spl_boot_device(void)
 	}
 	return BOOT_DEVICE_NONE;
 }
-
-#ifdef CONFIG_SPL_USB_GADGET
-int g_dnl_bind_fixup(struct usb_device_descriptor *dev, const char *name)
-{
-	put_unaligned(CONFIG_USB_GADGET_PRODUCT_NUM + 0xfff, &dev->idProduct);
-
-	return 0;
-}
-#endif
 #endif
 
 #if defined(CONFIG_SPL_MMC_SUPPORT)

@@ -216,11 +216,11 @@ static int __abortboot(int bootdelay)
 #ifdef CONFIG_MENUPROMPT
 	printf(CONFIG_MENUPROMPT);
 #else
-	printf("Hit key to stop autoboot('CTRL+C'): %2d ", bootdelay);
+	printf("Hit any key to stop autoboot: %2d ", bootdelay);
 #endif
 
 #ifdef CONFIG_ARCH_ROCKCHIP
-	if (!IS_ENABLED(CONFIG_CONSOLE_DISABLE_CLI) && ctrlc()) {	/* we press ctrl+c ? */
+	if (ctrlc()) {	/* we press ctrl+c ? */
 #else
 	/*
 	 * Check if key already pressed
@@ -237,11 +237,13 @@ static int __abortboot(int bootdelay)
 		/* delay 1000 ms */
 		ts = get_timer(0);
 		do {
-			if (ctrlc()) {	/* we got a ctrl+c key press	*/
+			if (tstc()) {	/* we got a key press	*/
 				abort  = 1;	/* don't auto boot	*/
 				bootdelay = 0;	/* no more delay	*/
 # ifdef CONFIG_MENUKEY
-				menukey = 0x03;	/* ctrl+c key code */
+				menukey = getc();
+# else
+				(void) getc();  /* consume input	*/
 # endif
 				break;
 			}
@@ -341,12 +343,6 @@ const char *bootdelay_process(void)
 	return s;
 }
 
-/*
- * Board-specific Platform code can reimplement autoboot_command_fail_handle ()
- * if needed
- */
-__weak void autoboot_command_fail_handle(void) {}
-
 void autoboot_command(const char *s)
 {
 	debug("### main_loop: bootcmd=\"%s\"\n", s ? s : "<UNDEFINED>");
@@ -357,7 +353,6 @@ void autoboot_command(const char *s)
 #endif
 
 		run_command_list(s, -1, 0);
-		autoboot_command_fail_handle();
 
 #if defined(CONFIG_AUTOBOOT_KEYED) && !defined(CONFIG_AUTOBOOT_KEYED_CTRLC)
 		disable_ctrlc(prev);	/* restore Control C checking */

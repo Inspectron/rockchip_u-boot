@@ -12,7 +12,7 @@
  */
 #include <common.h>
 #include <spl.h>
-#include <linux/libfdt.h>
+#include <libfdt.h>
 
 #ifndef CONFIG_SPL_LOAD_FIT_ADDRESS
 # define CONFIG_SPL_LOAD_FIT_ADDRESS	0
@@ -34,19 +34,13 @@ static int spl_ram_load_image(struct spl_image_info *spl_image,
 
 	header = (struct image_header *)CONFIG_SPL_LOAD_FIT_ADDRESS;
 
-#if CONFIG_IS_ENABLED(DFU)
+#if defined(CONFIG_SPL_DFU_SUPPORT)
 	if (bootdev->boot_device == BOOT_DEVICE_DFU)
 		spl_dfu_cmd(0, "dfu_alt_info_ram", "ram", "0");
 #endif
 
-#ifdef CONFIG_SPL_FIT_IMAGE_MULTIPLE
-	if ((IS_ENABLED(CONFIG_SPL_LOAD_FIT) &&
-	     image_get_magic(header) == FDT_MAGIC) ||
-	     CONFIG_SPL_FIT_IMAGE_MULTIPLE > 1) {
-#else
 	if (IS_ENABLED(CONFIG_SPL_LOAD_FIT) &&
 	    image_get_magic(header) == FDT_MAGIC) {
-#endif
 		struct spl_load_info load;
 
 		debug("Found FIT\n");
@@ -72,7 +66,7 @@ static int spl_ram_load_image(struct spl_image_info *spl_image,
 #if defined(CONFIG_SPL_RAM_DEVICE)
 SPL_LOAD_IMAGE_METHOD("RAM", 0, BOOT_DEVICE_RAM, spl_ram_load_image);
 #endif
-#if CONFIG_IS_ENABLED(DFU)
+#if defined(CONFIG_SPL_DFU_SUPPORT)
 SPL_LOAD_IMAGE_METHOD("DFU", 0, BOOT_DEVICE_DFU, spl_ram_load_image);
 #endif
 

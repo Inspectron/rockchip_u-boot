@@ -36,9 +36,8 @@ static int fixed_regulator_ofdata_to_platdata(struct udevice *dev)
 
 	/* Set type to fixed */
 	uc_pdata->type = REGULATOR_TYPE_FIXED;
-	if (!dev_read_bool(dev, "enable-active-high"))
-		flags |= GPIOD_ACTIVE_LOW;
-	if (dev_read_bool(dev, "regulator-boot-on"))
+
+	if (dev_read_bool(dev, "enable-active-high"))
 		flags |= GPIOD_IS_OUT_ACTIVE;
 
 	/* Get fixed regulator optional enable GPIO desc */
